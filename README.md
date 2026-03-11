@@ -1,204 +1,258 @@
-# Inventory Management System
+# Django Inventory Management System
 
-This project is an Inventory Management System built with Django, allowing users to manage inventory items, suppliers, and access data through both a web interface and a RESTful API.
+## About the Project
+
+This project is a simple **Inventory Management System built using Django and Django REST Framework**.
+It allows users to manage inventory items, suppliers, and access inventory data through both a **web interface** and **RESTful API endpoints**.
+
+The project demonstrates important backend concepts such as **CRUD operations, model relationships, API development, and Django admin management**.
+
+---
+
+## Tech Stack
+
+* Python
+* Django
+* Django REST Framework
+* SQLite
+* HTML (Django Templates)
+
+---
+
+## Features
+
+* Add, update, and delete inventory items
+* Manage supplier information
+* REST API endpoints for inventory data
+* Filter inventory items using query parameters
+* Django admin dashboard for easy management
+* Unit tests for verifying application functionality
+
+---
+
+## Project Structure
+
+```
+django-inventory-management/
+│
+├── inventory/          # Handles inventory models, views, and templates
+├── api/                # REST API endpoints and serializers
+├── inventory_project/  # Main Django project settings
+├── manage.py
+├── requirements.txt
+└── README.md
+```
+
+---
 
 ## Requirements
 
-- Python (3.6 or higher)
-  Verify if Python is installed by running the following command in your terminal or command prompt:
-  ```bash
-  python --version
-  ```
-  If Python is installed, it will display the version installed. If not, you can download and install Python from [Python's official website](https://www.python.org/downloads/).
+Make sure the following are installed on your system:
 
-- Pip3
-  ```bash
-  python -m pip install --upgrade pip
-  ```
-- Virtualenv
-  ```bash
-  pip install virtualenv
-  ```
+### Python
 
-## Project Overview
+Check Python installation:
 
-The project includes the following main components:
+```
+python --version
+```
 
-- **inventory:** Django app managing inventory items, suppliers, and views for the inventory.
-- **api:** Django app providing RESTful API endpoints to access inventory data.
+Download Python if needed:
+https://www.python.org/downloads/
 
-The `db.sqlite3` file (the SQLite database) is gitignored to prevent versioning of the database.
+### Pip
+
+Upgrade pip:
+
+```
+python -m pip install --upgrade pip
+```
+
+### Virtual Environment
+
+Install virtualenv:
+
+```
+pip install virtualenv
+```
+
+---
 
 ## Project Setup
 
-### Setting up the Project
+### 1. Clone the repository
 
-1. Clone the repository.
-   ```bash
-   git clone https://github.com/gydox/django-ims.git
-   ```
+```
+git clone https://github.com/SNTejaswi/django-inventory-management.git
+cd django-inventory-management
+```
 
-2. Create a virtual environment.
-   ```bash
-   python -m venv venv
-   ```
+### 2. Create a virtual environment
 
-3. Activate the virtual environment.
-   - macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
-   - Windows:
-     ```bash
-     venv\Scripts\activate
-     ```
+```
+python -m venv venv
+```
 
-4. Install dependencies from `requirements.txt`.
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 3. Activate the virtual environment
 
-5. Apply migrations to create database tables.
-   ```bash
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
+**Windows**
 
-6. Create a superuser to manage the database.
-   ```bash
-   python manage.py createsuperuser
-   ```
+```
+venv\Scripts\activate
+```
 
-### Running the Application
+**macOS / Linux**
 
-Run the development server:
-   ```bash
-   python manage.py runserver
-   ```
+```
+source venv/bin/activate
+```
 
-Access the web interface at `http://localhost:8000/` and explore the different views. The Django admin panel is available at `http://localhost:8000/admin/`.
+### 4. Install dependencies
 
-Navigate to the admin panel to create, update or delete items in the database.
+```
+pip install -r requirements.txt
+```
+
+### 5. Apply migrations
+
+```
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 6. Create a superuser
+
+```
+python manage.py createsuperuser
+```
+
+---
+
+## Running the Application
+
+Start the development server:
+
+```
+python manage.py runserver
+```
+
+Open the application in your browser:
+
+Main application:
+
+```
+http://localhost:8000/
+```
+
+Django admin panel:
+
+```
+http://localhost:8000/admin/
+```
+
+Use the admin panel to create, update, or delete inventory records.
+
+---
 
 ## Models
 
-### Supplier Model
+### Supplier
 
-Represents the suppliers associated with the inventory items.
+Represents suppliers associated with inventory items.
 
-- **Fields**:
-  - **name** (`CharField`): Name of the supplier.
+Fields:
 
-### Inventory Model
+* name (CharField)
 
-Represents the inventory items.
+### Inventory
 
-- **Fields**:
-  - **name** (`CharField`): Name of the inventory item.
-  - **description** (`CharField`): Brief description of the inventory item.
-  - **note** (`TextField`): Additional notes or details about the inventory item.
-  - **stock** (`IntegerField`): Quantity or stock count of the inventory item.
-  - **availability** (`BooleanField`): Availability status of the inventory item.
-  - **supplier** (`ForeignKey`): Relationship with the Supplier model.
+Represents items stored in the inventory.
 
-Each model has a `__str__` method that returns the name of the corresponding item as a string representation.
+Fields:
 
+* name (CharField)
+* description (CharField)
+* note (TextField)
+* stock (IntegerField)
+* availability (BooleanField)
+* supplier (ForeignKey → Supplier)
+
+Each model includes a `__str__` method for readable object representation.
+
+---
 
 ## API Endpoints
 
-### Inventory API Endpoints
+### Get Inventory Items
 
-#### GET `/api/inventory/`
+```
+GET /api/inventory/
+```
 
-Retrieves a list of inventory items. This endpoint supports filtering by name using a URL query parameter `name`. Example: `/api/inventory/?name=<query>`.
+Returns a list of all inventory items.
 
-##### Example Response without Query Parameter
+Example response:
 
-Request: `/api/inventory/`
-
-Response:
 ```json
 [
-    {
-        "id": 1,
-        "name": "Item 1",
-        "description": "Description for Item 1",
-        "note": "Note for Item 1",
-        "stock": 10,
-        "availability": true,
-        "supplier": {
-            "id": 1,
-            "name": "Supplier A"
-        }
-    },
-    {
-        "id": 2,
-        "name": "Item 2",
-        "description": "Description for Item 2",
-        "note": "Note for Item 2",
-        "stock": 15,
-        "availability": true,
-        "supplier": {
-            "id": 2,
-            "name": "Supplier B"
-        }
+  {
+    "id": 1,
+    "name": "Item 1",
+    "description": "Description for Item 1",
+    "note": "Note for Item 1",
+    "stock": 10,
+    "availability": true,
+    "supplier": {
+      "id": 1,
+      "name": "Supplier A"
     }
-    // Other inventory items without filtering...
+  }
 ]
 ```
 
+---
 
-##### Example Response with Query Parameter
+### Filter Inventory by Name
 
-Request: `/api/inventory/?name=Item 1`
-
-Response:
-```json
-[
-    {
-        "id": 1,
-        "name": "Item 1",
-        "description": "Description for Item 1",
-        "note": "Note for Item 1",
-        "stock": 10,
-        "availability": true,
-        "supplier": {
-            "id": 1,
-            "name": "Supplier A"
-        }
-    },
-    {
-        "id": 3,
-        "name": "Item 1 Variant",
-        "description": "Description for Item 1 Variant",
-        "note": "Note for Item 1 Variant",
-        "stock": 8,
-        "availability": true,
-        "supplier": {
-            "id": 2,
-            "name": "Supplier B"
-        }
-    }
-    // Other inventory items matching the query...
-]
+```
+GET /api/inventory/?name=Item
 ```
 
-### Testing
+Returns inventory items matching the query parameter.
 
-To run tests, execute:
-   ```bash
-   python manage.py test
-   ```
+---
 
-The test cases include:
+## Testing
 
-- `test_inventory_list_page_status`: Checks if the `/inventory` page returns a status code of 200 and contains expected content.
-- `test_inventory_detail_page_status`: Checks if the `/inventory/<id>` page returns a status code of 200 and contains expected content.
-- `test_api_inventory_page_status`: Checks if the `/api/inventory` API endpoint returns a status code of 200.
+Run the test suite:
 
-This will execute the unit tests to ensure functionality.
+```
+python manage.py test
+```
+
+Example test cases include:
+
+* Checking if the inventory list page loads successfully
+* Checking if the inventory detail page returns status 200
+* Verifying the API inventory endpoint
+
+---
+
+## Future Improvements
+
+* Add JWT authentication
+* Build a React frontend dashboard
+* Add stock alert notifications
+* Export inventory reports
+* Add pagination for API responses
+
+---
 
 ## Contributing
 
-If you wish to contribute to this project, please fork the repository, make your changes, and submit a pull request. Contributions are welcome!
+Contributions are welcome.
 
+1. Fork the repository
+2. Create a new branch
+3. Commit your changes
+4. Submit a pull request
